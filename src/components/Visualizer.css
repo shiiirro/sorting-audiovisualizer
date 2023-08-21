@@ -1,0 +1,22 @@
+.container {
+    height: 40vh;
+    width: 80vw;
+    padding: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    margin: 0 auto;
+    margin-top: 100px;
+}
+
+.bar {
+    width: 1vw;
+    margin: 0px;
+}
+
+.tmp {
+    background-color: whitesmoke;
+    width: 2vw;
+    height: 2vh;
+    margin: 100px;
+}
