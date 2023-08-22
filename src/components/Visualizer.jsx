@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { mergeSort } from '../algorithms/mergeSort';
 import { bubbleSort } from '../algorithms/bubbleSort';
+import { heapSort } from '../algorithms/heapSort';
 import './Visualizer.css'
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -56,8 +57,18 @@ export default function Visualizer() {
 
     function stop() {
         clearTimeouts();
-        audioContext.current.suspend();
+        if (audioContext.current.state === "running") audioContext.current.suspend();
         setActive(false);
+    }
+
+    function prep() {
+        setActive(true);
+        audioContext.current.resume();
+        const newBars = bars.slice();
+        for (let i = 0; i < newBars.length; ++i) {
+            if (newBars[i].color !== 'white') newBars[i].color = 'white';
+        }
+        setBars(newBars);
     }
 
     async function processStep(bars, step) {
@@ -83,8 +94,7 @@ export default function Visualizer() {
 
     async function stepThroughMergeSort() {
         if (active) return;
-        setActive(true);
-        audioContext.current.resume();
+        prep();
         for (const step of mergeSort(bars.map(bar => bar.value), 0, bars.length)) {
             await processStep(bars, step);
         }
@@ -93,9 +103,17 @@ export default function Visualizer() {
 
     async function stepThroughBubbleSort() {
         if (active) return;
-        setActive(true);
-        audioContext.current.resume();
+        prep();
         for (const step of bubbleSort(bars.map(bar => bar.value), 0, bars.length)) {
+            await processStep(bars, step);
+        }
+        stop();
+    }
+
+    async function stepThroughHeapSort() {
+        if (active) return;
+        prep();
+        for (const step of heapSort(bars.map(bar => bar.value), 0, bars.length)) {
             await processStep(bars, step);
         }
         stop();
@@ -130,8 +148,10 @@ export default function Visualizer() {
                 ))}
             </div>
             <button className="tmp" onClick={reset}>reset</button>
+            <button className="tmp" onClick={stop}>pause</button>
             <button className="tmp" onClick={stepThroughMergeSort}>merg sort</button>
             <button className="tmp" onClick={stepThroughBubbleSort}>bub sort</button>
+            <button className="tmp" onClick={stepThroughHeapSort}>hep sort</button>
         </>
     );
 }
