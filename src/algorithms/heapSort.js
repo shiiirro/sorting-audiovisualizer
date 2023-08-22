@@ -19,10 +19,12 @@ function* siftDown(array, heapSize, i) {
     let r = 2 * i + 2;
 
     if (l < heapSize && array[l] > array[largest]) {
+        yield [{index: l, value: null, color: 'red'}, {index: largest, value: null, color: 'red'}];
         largest = l;
     }
 
     if (r < heapSize && array[r] > array[largest]) {
+        yield [{index: r, value: null, color: 'red'}, {index: largest, value: null, color: 'red'}];
         largest = r;
     }
 
