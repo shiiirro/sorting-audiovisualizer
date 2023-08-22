@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { mergeSort } from '../algorithms/mergeSort';
+import { bubbleSort } from '../algorithms/bubbleSort';
 import './Visualizer.css'
 
 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -13,39 +14,37 @@ export default function Visualizer() {
 
     useEffect(() => {
         const context = new AudioContext();
-        const o1 = context.createOscillator();
-        const g1 = context.createGain();
-        const o2 = context.createOscillator();
-        const g2 = context.createGain();
+        const g = context.createGain();
+        g.gain.setValueAtTime(0.125, 0);
+        g.connect(context.destination);
 
-        o1.type = "triangle";
-        o1.frequency.value = 87;
-        o2.type = "triangle";
-        o2.frequency.value = 87;
-
-        o1.connect(g1);
-        g1.connect(context.destination);
-        o1.start();
-        o2.connect(g2);
-        g2.connect(context.destination);
-        o2.start();
-
-        g1.gain.setValueAtTime(0.5, 0);
-        g2.gain.setValueAtTime(0.5, 0);
+        let osc = [];
+        for (let i = 0; i < 8; ++i) {
+            const o = context.createOscillator();
+            o.type = "triangle";
+            o.connect(g);
+            o.start();
+            osc.push(o);
+        }
 
         audioContext.current = context;
-        let nodes = [o1, o2];
-        oscillators.current = nodes;
+        oscillators.current = osc;
         context.suspend();
 
+        genBars();
+
         return () => {
-            g1.disconnect(context.destination);
-            g2.disconnect(context.destination);
+            g.disconnect();
+            context.close();
         };
     }, []);
 
     function reset() {
         stop();
+        genBars()
+    }
+
+    function genBars() {
         const newBars = [];
         for (let i = 0; i < 256; ++i) {
             newBars.push({ value: randomIntFromInterval(1, 1000), color: 'white' });
@@ -59,34 +58,41 @@ export default function Visualizer() {
         setActive(false);
     }
 
+    async function processStep(bars, step) {
+        const newBars = bars.slice();
+        step.forEach((update, idx) => {
+            if (update.value != null) {
+                newBars[update.index].value = update.value;
+            }
+            newBars[update.index].color = update.color;
+            for (let i = idx * 8 / step.length; i < (idx + 1) * 8 / step.length; ++i) {
+                oscillators.current[i].frequency.value = newBars[update.index].value;
+            }
+        });
+        setBars(newBars);
+        await delay(1);
+        step.forEach((update) => {
+            newBars[update.index].color = 'white';
+        });
+        setBars(newBars);
+    }
+
     async function stepThroughMergeSort() {
         if (active) return;
         setActive(true);
         audioContext.current.resume();
         for (const step of mergeSort(bars.map(bar => bar.value), 0, bars.length)) {
-            let newBars = bars.slice();
-            if (step.operation === 'comparison') {
-                newBars[step.indices[0]].color = step.color;
-                newBars[step.indices[1]].color = step.color;
-                oscillators.current[0].frequency.value = newBars[step.indices[0]].value / 1000 * 800;
-                oscillators.current[1].frequency.value = newBars[step.indices[1]].value / 1000 * 800;
-                setBars(newBars);
-                await delay(1);
-                newBars[step.indices[0]].color = 'white';
-                newBars[step.indices[1]].color = 'white';
-                setBars(newBars);
-                await delay(1);
-            } else {
-                newBars[step.index].value = step.value;
-                newBars[step.index].color = step.color;
-                oscillators.current[0].frequency.value = step.value / 1000 * 800;
-                oscillators.current[1].frequency.value = step.value / 1000 * 800;
-                setBars(newBars);
-                await delay(1);
-                newBars[step.index].color = 'white';
-                setBars(newBars);
-                await delay(1);
-            }
+            await processStep(bars, step);
+        }
+        stop();
+    }
+
+    async function stepThroughBubbleSort() {
+        if (active) return;
+        setActive(true);
+        audioContext.current.resume();
+        for (const step of bubbleSort(bars.map(bar => bar.value), 0, bars.length)) {
+            await processStep(bars, step);
         }
         stop();
     }
@@ -106,7 +112,6 @@ export default function Visualizer() {
         });
     }
 
-
     return (
         <>
             <div className="container">
@@ -121,7 +126,8 @@ export default function Visualizer() {
                 ))}
             </div>
             <button className="tmp" onClick={reset}>reset</button>
-            <button className="tmp" onClick={stepThroughMergeSort}>sort</button>
+            <button className="tmp" onClick={stepThroughMergeSort}>merg sort</button>
+            <button className="tmp" onClick={stepThroughBubbleSort}>bub sort</button>
         </>
     );
 }
