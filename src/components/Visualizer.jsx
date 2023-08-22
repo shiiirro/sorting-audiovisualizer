@@ -9,7 +9,8 @@ export default function Visualizer() {
     const [bars, setBars] = useState([]);
     const [active, setActive] = useState(false);
     const timeoutIds = useRef([]);
-    const audioContext = useRef();
+    const audioContext = useRef(null);
+    const gainNode = useRef(null);
     const oscillators = useRef([]);
 
     useEffect(() => {
@@ -28,6 +29,7 @@ export default function Visualizer() {
         }
 
         audioContext.current = context;
+        gainNode.current = g;
         oscillators.current = osc;
         context.suspend();
 
@@ -65,10 +67,12 @@ export default function Visualizer() {
                 newBars[update.index].value = update.value;
             }
             newBars[update.index].color = update.color;
-            for (let i = idx * 8 / step.length; i < (idx + 1) * 8 / step.length; ++i) {
-                oscillators.current[i].frequency.value = newBars[update.index].value;
-            }
         });
+
+        for (let i = 0; i < 8; ++i) {
+            oscillators.current[i].frequency.value = newBars[step[i % step.length].index].value + 50;
+        }
+
         setBars(newBars);
         await delay(1);
         step.forEach((update) => {
