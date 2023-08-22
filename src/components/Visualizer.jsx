@@ -147,11 +147,13 @@ export default function Visualizer() {
                         }}></div>
                 ))}
             </div>
-            <button className="tmp" onClick={reset}>reset</button>
-            <button className="tmp" onClick={stop}>stop</button>
-            <button className="tmp" onClick={stepThroughMergeSort}>merge sort</button>
-            <button className="tmp" onClick={stepThroughBubbleSort}>bubble sort</button>
-            <button className="tmp" onClick={stepThroughHeapSort}>heap sort</button>
+            <div className="button-bar">
+                <button className="tmp" onClick={reset}>reset</button>
+                <button className="tmp" onClick={stop}>stop</button>
+                <button className="tmp" onClick={stepThroughMergeSort}>merge sort</button>
+                <button className="tmp" onClick={stepThroughBubbleSort}>bubble sort</button>
+                <button className="tmp" onClick={stepThroughHeapSort}>heap sort</button>
+            </div>
         </>
     );
 }
