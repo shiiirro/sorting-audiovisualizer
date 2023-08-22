@@ -44,13 +44,15 @@ export default function Visualizer() {
 
     function reset() {
         stop();
-        genBars()
+        const newBars = bars.slice();
+        shuffle(newBars);
+        setBars(newBars);
     }
 
     function genBars() {
         const newBars = [];
         for (let i = 0; i < 256; ++i) {
-            newBars.push({ value: randomIntFromInterval(1, 1000), color: 'white' });
+            newBars.push({ value: i * 4, color: 'white' });
         }
         setBars(newBars);
     }
@@ -163,3 +165,22 @@ function randomIntFromInterval(min, max) {
     // min and max included
     return Math.floor(Math.random() * (max - min + 1) + min);
 }
+
+// From https://bost.ocks.org/mike/shuffle/
+function shuffle(array) {
+    var m = array.length, t, i;
+  
+    // While there remain elements to shuffle…
+    while (m) {
+  
+      // Pick a remaining element…
+      i = Math.floor(Math.random() * m--);
+  
+      // And swap it with the current element.
+      t = array[m];
+      array[m] = array[i];
+      array[i] = t;
+    }
+  
+    return array;
+  }
