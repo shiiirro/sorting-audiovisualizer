@@ -1,5 +1,5 @@
 A relatively simple starting project to learn React and Javascript.\
-Helped me learn React Hooks, asynchronous functions, and the event loop.\
+Notable features include React Hooks, asynchronous functions, and the event loop.
 
 See a online version at [https://shiiirro.github.io/sorting-audiovisualizer](https://shiiirro.github.io/sorting-audiovisualizer/)
 
