@@ -40,6 +40,7 @@ export default function Visualizer() {
         context.suspend();
 
         genBars();
+        setNodes(nodes => shuffleArray(nodes.slice()));
 
         return () => {
             g.disconnect();
