@@ -15,7 +15,6 @@
 
 .sort-selection-bar {
     height: 20vh;
-    width: 80vw;
     display: flex;
     flex-direction: row;
     align-items: flex-end;
@@ -37,10 +36,6 @@
     background-color: black;
     margin: auto;
     margin-top: 0;
-    font: 'Segoe UI';
-    color: white;
-    font-size: calc(12px + 1vw);
-    line-height: 5.5rem;
 }
 
 .button {
@@ -51,8 +46,8 @@
     font: 'Segoe UI';
     color: white;
     border: 0px;
-    font-size: calc(12px + 1vw);
-    line-height: 5.5rem;
+    font-size: calc(10px + 1vw);
+    line-height: 4vh;
 }
 
 .sort-button-combo {
