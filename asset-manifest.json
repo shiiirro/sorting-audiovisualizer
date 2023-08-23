@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/sorting-audiovisualizer/static/css/main.39be87ab.css",
+    "main.css": "/sorting-audiovisualizer/static/css/main.c5c115b1.css",
     "main.js": "/sorting-audiovisualizer/static/js/main.e172901f.js",
     "static/js/787.f5ecc189.chunk.js": "/sorting-audiovisualizer/static/js/787.f5ecc189.chunk.js",
     "index.html": "/sorting-audiovisualizer/index.html",
-    "main.39be87ab.css.map": "/sorting-audiovisualizer/static/css/main.39be87ab.css.map",
+    "main.c5c115b1.css.map": "/sorting-audiovisualizer/static/css/main.c5c115b1.css.map",
     "main.e172901f.js.map": "/sorting-audiovisualizer/static/js/main.e172901f.js.map",
     "787.f5ecc189.chunk.js.map": "/sorting-audiovisualizer/static/js/787.f5ecc189.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.39be87ab.css",
+    "static/css/main.c5c115b1.css",
     "static/js/main.e172901f.js"
   ]
 }
