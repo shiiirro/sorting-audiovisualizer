@@ -1,16 +1,16 @@
 {
   "files": {
-    "main.css": "/sorting-audiovisualizer/static/css/main.e500a166.css",
-    "main.js": "/sorting-audiovisualizer/static/js/main.f0995aeb.js",
+    "main.css": "/sorting-audiovisualizer/static/css/main.083e2311.css",
+    "main.js": "/sorting-audiovisualizer/static/js/main.16d3685a.js",
     "static/js/787.f5ecc189.chunk.js": "/sorting-audiovisualizer/static/js/787.f5ecc189.chunk.js",
     "static/media/logo.svg": "/sorting-audiovisualizer/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/sorting-audiovisualizer/index.html",
-    "main.e500a166.css.map": "/sorting-audiovisualizer/static/css/main.e500a166.css.map",
-    "main.f0995aeb.js.map": "/sorting-audiovisualizer/static/js/main.f0995aeb.js.map",
+    "main.083e2311.css.map": "/sorting-audiovisualizer/static/css/main.083e2311.css.map",
+    "main.16d3685a.js.map": "/sorting-audiovisualizer/static/js/main.16d3685a.js.map",
     "787.f5ecc189.chunk.js.map": "/sorting-audiovisualizer/static/js/787.f5ecc189.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.e500a166.css",
-    "static/js/main.f0995aeb.js"
+    "static/css/main.083e2311.css",
+    "static/js/main.16d3685a.js"
   ]
 }
