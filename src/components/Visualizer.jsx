@@ -15,8 +15,11 @@ export default function Visualizer() {
     const gainNode = useRef(null);
     const oscillators = useRef([]);
     const checkpoint = useRef(null);
+    // const [number, setNumber] = useState(0);
 
     useEffect(() => {
+        document.title = 'sorting-audiovisualizer';
+
         const context = new AudioContext();
         const g = context.createGain();
         g.gain.setValueAtTime(0.125, 0);
@@ -45,9 +48,13 @@ export default function Visualizer() {
     }, []);
 
     useEffect(() => {
-        if (verify()) {
-            checkpoint.current = nodes.slice();
+        let currentValues = nodes.map(bar => bar.value);
+        for (let i = 1; i <= NUMBER_OF_BARS; ++i) {
+            if (currentValues.find(element => element === i * 4) === undefined) {
+                return;
+            }
         }
+        checkpoint.current = nodes.slice();
     }, [nodes]);
 
     function shuffle() {
@@ -81,16 +88,6 @@ export default function Visualizer() {
         setActive(false);
     }
 
-    function verify() {
-        let currentBars = nodes.map(bar => bar.value);
-        for (let i = 1; i <= NUMBER_OF_BARS; ++i) {
-            if (currentBars.find(element => element === i * 4) === undefined) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     function prep() {
         setActive(true);
         setNodes(checkpoint.current);
@@ -101,7 +98,7 @@ export default function Visualizer() {
     async function processStep(step) {
         step.forEach((update, idx) => {
             setNodes(nodes => nodes.map((bar, idx) => {
-                if (idx == update.index) {
+                if (idx === update.index) {
                     return {...bar, value: update.value, color: update.color};
                 } else {
                     return bar;
@@ -125,11 +122,14 @@ export default function Visualizer() {
                 return heapSort;
             case 'bubble':
                 return bubbleSort;
+            default:
+                return heapSort;
         }
     }
 
     async function stepThroughSort() {
         if (active) return;
+        // timeoutIds.current.push(setInterval(() => {setNumber(number => (number + 1) % 3);}, 1000));
         prep();
         for (const step of sortFunctionOf(selectedSort)(checkpoint.current.map(bar => bar.value), 0, NUMBER_OF_BARS)) {
             await processStep(step);
@@ -152,12 +152,33 @@ export default function Visualizer() {
         });
     }
 
+    function changeSelectedSort(newSort) {
+        if (active) return;
+        setSelectedSort(newSort);
+    }
+
+
     return (
         <>
             <div className="sort-selection-bar">
-                <button className="tmp" onClick={() => setSelectedSort('merge')}>merge sort</button>
-                <button className="tmp" onClick={() => setSelectedSort('heap')}>heap sort</button>
-                <button className="tmp" onClick={() => setSelectedSort('bubble')}>bubble sort</button>
+                <div className='sort-button-combo'>
+                    <button className="button" onClick={() => changeSelectedSort('merge')}>merge sort</button>
+                    <div className='button-select-ind' style={{
+                        backgroundColor: selectedSort === 'merge' ? 'white' : 'black'
+                    }}></div>
+                </div>
+                <div className='sort-button-combo'>
+                <button className="button" onClick={() => changeSelectedSort('heap')}>heap sort</button>
+                <div className='button-select-ind' style={{
+                        backgroundColor: selectedSort === 'heap' ? 'white' : 'black'
+                    }}></div>
+                </div>
+                <div className='sort-button-combo'>
+                <button className="button" onClick={() => changeSelectedSort('bubble')}>bubble sort</button>
+                <div className='button-select-ind' style={{
+                        backgroundColor: selectedSort === 'bubble' ? 'white' : 'black'
+                    }}></div>
+                </div>
             </div>
             <div className="container">
                 {nodes.map((bar, idx) => (
@@ -171,9 +192,9 @@ export default function Visualizer() {
                 ))}
             </div>
             <div className="button-bar">
-                <button className="tmp" onClick={shuffle}>shuffle</button>
-                <button className="tmp" onClick={stop}>stop</button>
-                <button className="tmp" onClick={stepThroughSort}>start</button>
+                <button className="button" onClick={shuffle}>shuffle</button>
+                <button className="button" onClick={stop}>stop</button>
+                <button className="button" onClick={stepThroughSort}>start</button>
             </div>
         </>
     );
