@@ -4,15 +4,17 @@ import { bubbleSort } from '../algorithms/bubbleSort';
 import { heapSort } from '../algorithms/heapSort';
 import './Visualizer.css'
 
-const AudioContext = window.AudioContext || window.webkitAudioContext;
+const NUMBER_OF_BARS = 256;
 
 export default function Visualizer() {
-    const [bars, setBars] = useState([]);
+    const [nodes, setNodes] = useState([]);
     const [active, setActive] = useState(false);
+    const [selectedSort, setSelectedSort] = useState('heap');
     const timeoutIds = useRef([]);
     const audioContext = useRef(null);
     const gainNode = useRef(null);
     const oscillators = useRef([]);
+    const checkpoint = useRef(null);
 
     useEffect(() => {
         const context = new AudioContext();
@@ -42,14 +44,21 @@ export default function Visualizer() {
         };
     }, []);
 
-    function reset() {
+    useEffect(() => {
+        if (verify()) {
+            checkpoint.current = nodes.slice();
+        }
+    }, [nodes]);
+
+    function shuffle() {
         stop();
-        genBars();
-        setBars(bars => shuffle(bars.slice()));
+        setNodes(checkpoint.current);
+        clearColors();
+        setNodes(nodes => shuffleArray(nodes.slice()));
     }
 
     function clearColors() {
-        setBars(bars => bars.map(bar => {
+        setNodes(nodes => nodes.map(bar => {
             if (bar.color !== 'white') {
                 return {...bar, color: 'white'};
             } else {
@@ -60,10 +69,10 @@ export default function Visualizer() {
 
     function genBars() {
         const newBars = [];
-        for (let i = 0; i < 256; ++i) {
+        for (let i = 1; i <= NUMBER_OF_BARS; ++i) {
             newBars.push({ value: i * 4, color: 'white' });
         }
-        setBars(newBars);
+        setNodes(newBars);
     }
 
     function stop() {
@@ -72,15 +81,26 @@ export default function Visualizer() {
         setActive(false);
     }
 
-    function prep() {
-        setActive(true);
-        audioContext.current.resume();
-        clearColors();
+    function verify() {
+        let currentBars = nodes.map(bar => bar.value);
+        for (let i = 1; i <= NUMBER_OF_BARS; ++i) {
+            if (currentBars.find(element => element === i * 4) === undefined) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    async function processStep(bars, step) {
+    function prep() {
+        setActive(true);
+        setNodes(checkpoint.current);
+        clearColors();
+        audioContext.current.resume();
+    }
+
+    async function processStep(step) {
         step.forEach((update, idx) => {
-            setBars(bars => bars.map((bar, idx) => {
+            setNodes(nodes => nodes.map((bar, idx) => {
                 if (idx == update.index) {
                     return {...bar, value: update.value, color: update.color};
                 } else {
@@ -97,29 +117,22 @@ export default function Visualizer() {
         clearColors();
     }
 
-    async function stepThroughMergeSort() {
-        if (active) return;
-        prep();
-        for (const step of mergeSort(bars.map(bar => bar.value), 0, bars.length)) {
-            await processStep(bars, step);
+    function sortFunctionOf(name) {
+        switch (name) {
+            case 'merge':
+                return mergeSort;
+            case 'heap':
+                return heapSort;
+            case 'bubble':
+                return bubbleSort;
         }
-        stop();
     }
 
-    async function stepThroughBubbleSort() {
+    async function stepThroughSort() {
         if (active) return;
         prep();
-        for (const step of bubbleSort(bars.map(bar => bar.value), 0, bars.length)) {
-            await processStep(bars, step);
-        }
-        stop();
-    }
-
-    async function stepThroughHeapSort() {
-        if (active) return;
-        prep();
-        for (const step of heapSort(bars.map(bar => bar.value), 0, bars.length)) {
-            await processStep(bars, step);
+        for (const step of sortFunctionOf(selectedSort)(checkpoint.current.map(bar => bar.value), 0, NUMBER_OF_BARS)) {
+            await processStep(step);
         }
         stop();
     }
@@ -141,29 +154,33 @@ export default function Visualizer() {
 
     return (
         <>
+            <div className="sort-selection-bar">
+                <button className="tmp" onClick={() => setSelectedSort('merge')}>merge sort</button>
+                <button className="tmp" onClick={() => setSelectedSort('heap')}>heap sort</button>
+                <button className="tmp" onClick={() => setSelectedSort('bubble')}>bubble sort</button>
+            </div>
             <div className="container">
-                {bars.map((bar, idx) => (
+                {nodes.map((bar, idx) => (
                     <div
                         className="bar"
                         key={`${idx}_${bar.value}`}
                         style={{
                             backgroundColor: bar.color,
-                            height: `${bar.value / 1000 * 40}vh`,
+                            height: `${bar.value / NUMBER_OF_BARS / 4 * 40}vh`,
                         }}></div>
                 ))}
             </div>
             <div className="button-bar">
-                <button className="tmp" onClick={reset}>reset</button>
-                <button className="tmp" onClick={stepThroughMergeSort}>merge sort</button>
-                <button className="tmp" onClick={stepThroughBubbleSort}>bubble sort</button>
-                <button className="tmp" onClick={stepThroughHeapSort}>heap sort</button>
+                <button className="tmp" onClick={shuffle}>shuffle</button>
+                <button className="tmp" onClick={stop}>stop</button>
+                <button className="tmp" onClick={stepThroughSort}>start</button>
             </div>
         </>
     );
 }
 
 // From https://bost.ocks.org/mike/shuffle/
-function shuffle(array) {
+function shuffleArray(array) {
     var m = array.length, t, i;
   
     // While there remain elements to shuffle…
