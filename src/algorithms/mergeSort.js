@@ -19,7 +19,7 @@ function* merge(array, start, mid, end) {
     let idxA = start;
 
     while (idxL < l.length && idxR < r.length) {
-        yield [{index: start + idxL, value: null, color: 'red'}, {index: mid + idxR, value: null, color: 'red'}];
+        yield [{index: start + idxL, value: l[idxL], color: 'red'}, {index: mid + idxR, value: r[idxR], color: 'red'}];
         if (l[idxL] < r[idxR]) {
             array[idxA++] = l[idxL++];
         } else {
@@ -28,12 +28,12 @@ function* merge(array, start, mid, end) {
     }
 
     while (idxL < l.length) {
-        yield [{index: start + idxL, value: null, color: 'red'}];
+        yield [{index: start + idxL, value: l[idxL], color: 'red'}];
         array[idxA++] = l[idxL++];
     }
 
     while (idxR < r.length) {
-        yield [{index: mid + idxR, value: null, color: 'red'}];
+        yield [{index: mid + idxR, value: r[idxR], color: 'red'}];
         array[idxA++] = r[idxR++];
     }
 

@@ -44,9 +44,18 @@ export default function Visualizer() {
 
     function reset() {
         stop();
-        const newBars = bars.slice();
-        shuffle(newBars);
-        setBars(newBars);
+        genBars();
+        setBars(bars => shuffle(bars.slice()));
+    }
+
+    function clearColors() {
+        setBars(bars => bars.map(bar => {
+            if (bar.color !== 'white') {
+                return {...bar, color: 'white'};
+            } else {
+                return bar;
+            }
+        }));
     }
 
     function genBars() {
@@ -66,32 +75,26 @@ export default function Visualizer() {
     function prep() {
         setActive(true);
         audioContext.current.resume();
-        const newBars = bars.slice();
-        for (let i = 0; i < newBars.length; ++i) {
-            if (newBars[i].color !== 'white') newBars[i].color = 'white';
-        }
-        setBars(newBars);
+        clearColors();
     }
 
     async function processStep(bars, step) {
-        const newBars = bars.slice();
         step.forEach((update, idx) => {
-            if (update.value != null) {
-                newBars[update.index].value = update.value;
-            }
-            newBars[update.index].color = update.color;
+            setBars(bars => bars.map((bar, idx) => {
+                if (idx == update.index) {
+                    return {...bar, value: update.value, color: update.color};
+                } else {
+                    return bar;
+                }
+            }));
         });
 
         for (let i = 0; i < 8; ++i) {
-            oscillators.current[i].frequency.value = newBars[step[i % step.length].index].value + 50;
+            oscillators.current[i].frequency.value = step[i % step.length].value + 50;
         }
 
-        setBars(newBars);
         await delay(1);
-        step.forEach((update) => {
-            newBars[update.index].color = 'white';
-        });
-        setBars(newBars);
+        clearColors();
     }
 
     async function stepThroughMergeSort() {
@@ -151,19 +154,12 @@ export default function Visualizer() {
             </div>
             <div className="button-bar">
                 <button className="tmp" onClick={reset}>reset</button>
-                <button className="tmp" onClick={stop}>stop</button>
                 <button className="tmp" onClick={stepThroughMergeSort}>merge sort</button>
                 <button className="tmp" onClick={stepThroughBubbleSort}>bubble sort</button>
                 <button className="tmp" onClick={stepThroughHeapSort}>heap sort</button>
             </div>
         </>
     );
-}
-
-// From https://stackoverflow.com/questions/4959975/generate-random-number-between-two-numbers-in-javascript
-function randomIntFromInterval(min, max) {
-    // min and max included
-    return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
 // From https://bost.ocks.org/mike/shuffle/
