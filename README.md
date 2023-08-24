@@ -1,6 +1,6 @@
 # Sorting Audio-Visualizer using React
 
-A relatively simple starting project to learn React and Javascript that dynamically visualizes popular sorting algorithms with programmically generated sounds.
+A relatively simple starting project to learn native React and Javascript that dynamically visualizes popular sorting algorithms with programmically generated sounds.
 
 See a online version at [https://shiiirro.github.io/sorting-audiovisualizer](https://shiiirro.github.io/sorting-audiovisualizer/)
 
@@ -8,6 +8,11 @@ See a online version at [https://shiiirro.github.io/sorting-audiovisualizer](htt
 - Real-time visualizations of Bubble Sort, Merge Sort and Heap Sort.
 - Dynamic array state updates through React Hooks and asynchronous functions, allowing real-time shuffle, stop, and start functionality.
 - Array access operations auralized through frequency updates of an oscillator array.
+
+## Notes
+The visualization operates on a dynamically updated array whenever 'start' is pressed. 'Stop' will halt the currently running algorithm, providing a snapshot of the array at its current point in the algorithm. 'Shuffle' does what you expect. The 'speed' slider modifies the visualization's delay between renders, with higher settings giving a faster animation.
+
+During the visualization, certain bars will change colors to represent some internal mechanism in the running algorithm. Generally, any colored bar means that the algorithm is accessing the value at the corresponding index, with red bars indicating comparisons, while green bars indicating assignment. Bubble sort is the exception; here red bars indicate comparisons and swapping until the end index of an iteration is reached, which is marked green. Colored bars also yield sound output according to their current numeric value. The waveform used is the standard "triangle" waveform provided by default in Javascript oscillators with frequency modified and linearly-scaled between 54hz-1074hz.
 
 Inspired by [The Sound of Sorting](https://panthema.net/2013/sound-of-sorting/) by Timo Bingmann.
 
