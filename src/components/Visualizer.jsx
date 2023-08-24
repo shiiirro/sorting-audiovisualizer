@@ -1,4 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
+import Box from '@mui/material/Box';
+import Slider from '@mui/material/Slider';
 import { mergeSort } from '../algorithms/mergeSort';
 import { bubbleSort } from '../algorithms/bubbleSort';
 import { heapSort } from '../algorithms/heapSort';
@@ -15,7 +17,8 @@ export default function Visualizer() {
     const gainNode = useRef(null);
     const oscillators = useRef([]);
     const checkpoint = useRef(null);
-    // const [number, setNumber] = useState(0);
+    const delayRef = useRef(1);
+    const [sliderVal, setSliderVal] = useState(4999);
 
     useEffect(() => {
         document.title = 'sorting-audiovisualizer';
@@ -68,7 +71,7 @@ export default function Visualizer() {
     function clearColors() {
         setNodes(nodes => nodes.map(bar => {
             if (bar.color !== 'white') {
-                return {...bar, color: 'white'};
+                return { ...bar, color: 'white' };
             } else {
                 return bar;
             }
@@ -89,29 +92,21 @@ export default function Visualizer() {
         setActive(false);
     }
 
-    function prep() {
-        setActive(true);
-        setNodes(checkpoint.current);
-        clearColors();
-        audioContext.current.resume();
+    function updateNodes(currNodes, step) {
+        step.forEach((update) => {
+            currNodes[update.index] = { value: update.value, color: update.color };
+        });
+        return currNodes;
     }
 
     async function processStep(step) {
-        step.forEach((update, idx) => {
-            setNodes(nodes => nodes.map((bar, idx) => {
-                if (idx === update.index) {
-                    return {...bar, value: update.value, color: update.color};
-                } else {
-                    return bar;
-                }
-            }));
-        });
+        setNodes(nodes => updateNodes(nodes, step));
 
         for (let i = 0; i < 8; ++i) {
             oscillators.current[i].frequency.value = step[i % step.length].value + 50;
         }
 
-        await delay(1);
+        await delay(delayRef.current);
         clearColors();
     }
 
@@ -131,7 +126,10 @@ export default function Visualizer() {
     async function stepThroughSort() {
         if (active) return;
         // timeoutIds.current.push(setInterval(() => {setNumber(number => (number + 1) % 3);}, 1000));
-        prep();
+        setActive(true);
+        setNodes(checkpoint.current);
+        clearColors();
+        audioContext.current.resume();
         for (const step of sortFunctionOf(selectedSort)(checkpoint.current.map(bar => bar.value), 0, NUMBER_OF_BARS)) {
             await processStep(step);
         }
@@ -169,14 +167,14 @@ export default function Visualizer() {
                     }}></div>
                 </div>
                 <div className='sort-button-combo'>
-                <button className="button" onClick={() => changeSelectedSort('heap')}>heap sort</button>
-                <div className='button-select-ind' style={{
+                    <button className="button" onClick={() => changeSelectedSort('heap')}>heap sort</button>
+                    <div className='button-select-ind' style={{
                         backgroundColor: selectedSort === 'heap' ? 'white' : 'black'
                     }}></div>
                 </div>
                 <div className='sort-button-combo'>
-                <button className="button" onClick={() => changeSelectedSort('bubble')}>bubble sort</button>
-                <div className='button-select-ind' style={{
+                    <button className="button" onClick={() => changeSelectedSort('bubble')}>bubble sort</button>
+                    <div className='button-select-ind' style={{
                         backgroundColor: selectedSort === 'bubble' ? 'white' : 'black'
                     }}></div>
                 </div>
@@ -197,6 +195,19 @@ export default function Visualizer() {
                 <button className="button" onClick={stop}>stop</button>
                 <button className="button" onClick={stepThroughSort}>start</button>
             </div>
+            <Box sx={{alignItems: 'center', width: `30vw`, margin: `auto`}}>
+                <text className='general-text'>speed</text>
+                <Slider
+                    min={1}
+                    step={1}
+                    max={900}
+                    value={sliderVal} onChange={(event, value) => {
+                        delayRef.current = 900 === value ? 0 : Math.floor(5042.810832 * Math.pow(Math.E, -0.00852572 * value));
+                        setSliderVal(value);
+                    }}
+                    sx={{color: 'white'}}
+                />
+            </Box>
         </>
     );
 }
@@ -204,18 +215,18 @@ export default function Visualizer() {
 // From https://bost.ocks.org/mike/shuffle/
 function shuffleArray(array) {
     var m = array.length, t, i;
-  
+
     // While there remain elements to shuffle…
     while (m) {
-  
-      // Pick a remaining element…
-      i = Math.floor(Math.random() * m--);
-  
-      // And swap it with the current element.
-      t = array[m];
-      array[m] = array[i];
-      array[i] = t;
+
+        // Pick a remaining element…
+        i = Math.floor(Math.random() * m--);
+
+        // And swap it with the current element.
+        t = array[m];
+        array[m] = array[i];
+        array[i] = t;
     }
-  
+
     return array;
-  }
+}

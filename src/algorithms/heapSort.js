@@ -7,7 +7,7 @@ export function* heapSort(array) {
         let tmp = array[i];
         array[i] = array[0];
         array[0] = tmp;
-        yield [{index: i, value: array[i], color: 'green'}, {index: 0, value: array[0], color: 'red'}];
+        yield [{index: i, value: array[i], color: 'green'}, {index: 0, value: array[0], color: 'green'}];
 
         yield* siftDown(array, i, 0);
     }
@@ -32,7 +32,7 @@ function* siftDown(array, heapSize, i) {
         let tmp = array[i];
         array[i] = array[largest];
         array[largest] = tmp;
-        yield [{index: i, value: array[i], color: 'red'}, {index: largest, value: array[largest], color: 'red'}];
+        yield [{index: i, value: array[i], color: 'green'}, {index: largest, value: array[largest], color: 'green'}];
 
         yield* siftDown(array, heapSize, largest);
     }

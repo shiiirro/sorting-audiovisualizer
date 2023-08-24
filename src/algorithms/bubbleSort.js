@@ -16,9 +16,10 @@ export function* bubbleSort(array) {
             ++end;
             if (j === i - 1) { // last iteration
                 let step = [];
-                for (let k = start; k < i + 1; ++k) {
+                for (let k = start; k < i; ++k) {
                     step.push({index: k, value: array[k], color: 'red'});
                 }
+                step.push({index: i, value: array[i], color: 'green'})
                 yield step;
             } else if (end - start + 1 >= INDICES_PER_STEP) {
                 let step = [];
