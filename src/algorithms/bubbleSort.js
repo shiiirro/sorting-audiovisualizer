@@ -19,6 +19,7 @@ export function* bubbleSort(array) {
                 for (let k = start; k < i; ++k) {
                     step.push({index: k, value: array[k], color: 'red'});
                 }
+                // green since, last index in each iteration is guaranteed to be the right spot
                 step.push({index: i, value: array[i], color: 'green'})
                 yield step;
             } else if (end - start + 1 >= INDICES_PER_STEP) {
