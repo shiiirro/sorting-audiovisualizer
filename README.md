@@ -8,6 +8,7 @@ See a online version at [https://shiiirro.github.io/sorting-audiovisualizer](htt
 - Real-time visualizations of Bubble Sort, Merge Sort and Heap Sort.
 - Dynamic array state updates through React Hooks and asynchronous functions, allowing real-time shuffle, stop, and start functionality.
 - Array access operations auralized through frequency updates of an oscillator array.
+- Sorting algorithms implemented as generator functions that yield a sequence of color and value changes at specific indices for efficiency.
 
 ## Notes
 The visualization operates on a dynamically updated array whenever 'start' is pressed. 'Stop' will halt the currently running algorithm, providing a snapshot of the array at its current point in the algorithm. 'Shuffle' does what you expect. The 'speed' slider modifies the visualization's delay between renders, with higher settings giving a faster animation.
