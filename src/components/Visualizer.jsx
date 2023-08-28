@@ -127,7 +127,7 @@ export default function Visualizer() {
         if (active) return;
         // timeoutIds.current.push(setInterval(() => {setNumber(number => (number + 1) % 3);}, 1000));
         setActive(true);
-        setNodes(checkpoint.current); // checkpoint ensures that all values are present (issue with desynced mergesort visualization, see mergesort for more details)
+        setNodes(checkpoint.current); // checkpoint ensures that all values are present (issue with desynced mergesort visualization, see mergesort for more)
         clearColors();
         audioContext.current.resume();
         for (const step of sortFunctionOf(selectedSort)(checkpoint.current.map(bar => bar.value), 0, NUMBER_OF_BARS)) {
@@ -152,7 +152,7 @@ export default function Visualizer() {
     }
 
     function changeSelectedSort(newSort) {
-        if (active) return;
+        if (active) stop();
         setSelectedSort(newSort);
     }
 
