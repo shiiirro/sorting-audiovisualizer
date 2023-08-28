@@ -2,7 +2,7 @@
 
 A relatively simple starting project to learn native React and Javascript that dynamically visualizes popular sorting algorithms with programmically generated sounds.
 
-See a online version at [https://shiiirro.github.io/sorting-audiovisualizer](https://shiiirro.github.io/sorting-audiovisualizer/)
+See a online version at [https://shiiirro.github.io/sorting-audiovisualizer](https://shiiirro.github.io/sorting-audiovisualizer/ (Please excuse the basic UI, this was my first time using both React and Javascript at all.)
 
 ## Features
 - Real-time visualizations of Bubble Sort, Merge Sort and Heap Sort.

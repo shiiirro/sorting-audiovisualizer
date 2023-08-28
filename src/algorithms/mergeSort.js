@@ -37,6 +37,7 @@ function* merge(array, start, mid, end) {
         array[idxA++] = r[idxR++];
     }
 
+    // since this is not an in-place mergesort, the visualization of assignment is desynced from the actual algorithm for clarity
     for (let i = start; i < end; ++i) {
         yield [{index: i, value: array[i], color: 'green'}];
     }
