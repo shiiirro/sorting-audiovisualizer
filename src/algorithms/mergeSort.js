@@ -1,5 +1,5 @@
 // generates a sequence of steps to visualize the sorting process
-export function* mergeSort(array, start, end) {
+export function* mergeSort(array, start = 0, end = array.length) {
     if (end - start < 2) return;
 
     const mid = Math.floor((start + end) / 2);

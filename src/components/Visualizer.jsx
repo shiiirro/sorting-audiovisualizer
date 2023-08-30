@@ -4,6 +4,7 @@ import Slider from '@mui/material/Slider';
 import { mergeSort } from '../algorithms/mergeSort';
 import { bubbleSort } from '../algorithms/bubbleSort';
 import { heapSort } from '../algorithms/heapSort';
+import { quickSort } from '../algorithms/quickSort';
 import './Visualizer.css'
 
 const NUMBER_OF_BARS = 256;
@@ -118,6 +119,8 @@ export default function Visualizer() {
                 return heapSort;
             case 'bubble':
                 return bubbleSort;
+            case 'quick':
+                return quickSort;
             default:
                 return heapSort;
         }
@@ -130,7 +133,7 @@ export default function Visualizer() {
         setNodes(checkpoint.current); // checkpoint ensures that all values are present (issue with desynced mergesort visualization, see mergesort for more)
         clearColors();
         audioContext.current.resume();
-        for (const step of sortFunctionOf(selectedSort)(checkpoint.current.map(bar => bar.value), 0, NUMBER_OF_BARS)) {
+        for (const step of sortFunctionOf(selectedSort)(checkpoint.current.map(bar => bar.value))) {
             await processStep(step);
         }
         stop();
@@ -173,6 +176,12 @@ export default function Visualizer() {
                     }}></div>
                 </div>
                 <div className='sort-button-combo'>
+                    <button className="button" onClick={() => changeSelectedSort('quick')}>quick sort</button>
+                    <div className='button-select-ind' style={{
+                        backgroundColor: selectedSort === 'quick' ? 'white' : 'black'
+                    }}></div>
+                </div>
+                <div className='sort-button-combo'>
                     <button className="button" onClick={() => changeSelectedSort('bubble')}>bubble sort</button>
                     <div className='button-select-ind' style={{
                         backgroundColor: selectedSort === 'bubble' ? 'white' : 'black'
@@ -196,7 +205,7 @@ export default function Visualizer() {
                 <button className="button" onClick={stepThroughSort}>start</button>
             </div>
             <Box sx={{alignItems: 'center', width: `30vw`, margin: `auto`}}>
-                <text className='general-text'>speed</text>
+                <div className='general-text'>speed</div>
                 <Slider
                     min={1}
                     step={1}
