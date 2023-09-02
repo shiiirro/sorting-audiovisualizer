@@ -2,7 +2,7 @@
 
 A relatively simple starting project to learn native React and Javascript that dynamically visualizes popular sorting algorithms with programmically generated sounds.
 
-![demo](./media/demo.gif)
+![demo](./.media/demo.gif)
 
 See a online version at (make sure to enable sound!) [https://shiiirro.github.io/sorting-audiovisualizer](https://shiiirro.github.io/sorting-audiovisualizer/)
 ## Features
