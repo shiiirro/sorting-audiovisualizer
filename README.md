@@ -1,6 +1,6 @@
 # Sorting Audio-Visualizer using React
 
-A relatively simple starting project to learn native React and Javascript that dynamically visualizes popular sorting algorithms with programmically generated sounds.
+A relatively simple starting project to learn React and Javascript that dynamically visualizes popular sorting algorithms with programmically generated sounds.
 
 ![demo](./.media/demo.gif)
 
